@@ -46,6 +46,9 @@ app.get('/health', (req, res) => {
 });
 
 // API Routes
+const authRoutes = require('./routes/auth.routes');
+const dashboardRoutes = require('./routes/dashboard.routes');
+const organizationRoutes = require('./routes/organization.routes');
 const locationRoutes = require('./routes/location.routes');
 const disasterRoutes = require('./routes/disaster.routes');
 const userRoutes = require('./routes/user.routes');
@@ -54,6 +57,12 @@ const quizRoutes = require('./routes/quiz.routes');
 const gameRoutes = require('./routes/game.routes');
 const badgeRoutes = require('./routes/badge.routes');
 
+// Authentication & Dashboard Routes (New)
+app.use(`${appConfig.server.apiPrefix}/auth`, authRoutes);
+app.use(`${appConfig.server.apiPrefix}/dashboard`, dashboardRoutes);
+app.use(`${appConfig.server.apiPrefix}/organizations`, organizationRoutes);
+
+// Existing Routes
 app.use(`${appConfig.server.apiPrefix}/location`, locationRoutes);
 app.use(`${appConfig.server.apiPrefix}/disasters`, disasterRoutes);
 app.use(`${appConfig.server.apiPrefix}/users`, userRoutes);
@@ -66,10 +75,12 @@ app.use(`${appConfig.server.apiPrefix}/badges`, badgeRoutes);
 app.get('/', (req, res) => {
   res.json({
     name: 'Disaster Response Training Platform API',
-    version: '1.0.0',
-    description: 'Location-aware disaster response training for primary school students',
+    version: '2.0.0',
+    description: 'Location-aware disaster response training for schools with multi-level authentication',
     endpoints: {
       health: '/health',
+      auth: `${appConfig.server.apiPrefix}/auth`,
+      dashboard: `${appConfig.server.apiPrefix}/dashboard`,
       location: `${appConfig.server.apiPrefix}/location`,
       disasters: `${appConfig.server.apiPrefix}/disasters`,
       users: `${appConfig.server.apiPrefix}/users`,
@@ -78,6 +89,7 @@ app.get('/', (req, res) => {
       games: `${appConfig.server.apiPrefix}/games`,
       badges: `${appConfig.server.apiPrefix}/badges`,
     },
+    userTypes: ['organization', 'teacher', 'student']
   });
 });
 
