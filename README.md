@@ -530,6 +530,20 @@ This project is suitable for:
 
 ---
 
+## 📚 Additional Documentation
+
+For more detailed information, see the `docs/` folder:
+
+- **[Architecture Diagram](docs/ARCHITECTURE_DIAGRAM.md)** - System architecture and data flow
+- **[Project Structure](docs/PROJECT_STRUCTURE.md)** - Detailed folder organization
+- **[Features](docs/FEATURES.md)** - Complete feature breakdown
+- **[Deployment Guide](docs/DEPLOYMENT_GUIDE.md)** - Production deployment instructions
+- **[Migration Guide](docs/MIGRATION_GUIDE.md)** - Upgrading and migration notes
+- **[Disaster Modules](docs/DISASTER_MODULES_README.md)** - Disaster module documentation
+- **[Project Summary](docs/PROJECT_SUMMARY.md)** - High-level project overview
+
+---
+
 <div align="center">
 
 **Made with ❤️ for safer communities**

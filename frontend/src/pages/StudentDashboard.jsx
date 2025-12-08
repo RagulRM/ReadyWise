@@ -3,10 +3,9 @@
  * Learning platform with modules, quizzes, and games
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import './Dashboard.css';
 import './Dashboard.css';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
@@ -15,9 +14,14 @@ const StudentDashboard = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [dashboardData, setDashboardData] = useState(null);
+  const [personalizedModules, setPersonalizedModules] = useState([]);
+  const [locationInfo, setLocationInfo] = useState(null);
+  const [moduleProgress, setModuleProgress] = useState([]);
 
   useEffect(() => {
     fetchDashboardData();
+    fetchPersonalizedModules();
+    fetchModuleProgress();
   }, []);
 
   const fetchDashboardData = async () => {
@@ -40,6 +44,42 @@ const StudentDashboard = () => {
     }
   };
 
+  const fetchPersonalizedModules = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${API_URL}/disasters/personalized/modules`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (response.data.success) {
+        const { modules, location } = response.data.data;
+        setPersonalizedModules(modules); // Show all modules prioritized by location
+        setLocationInfo(location);
+      }
+    } catch (error) {
+      console.error('Error fetching personalized modules:', error);
+    }
+  };
+
+  const fetchModuleProgress = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${API_URL}/module-progress/student/all`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (response.data.success) {
+        setModuleProgress(response.data.data || []);
+      }
+    } catch (error) {
+      console.error('Error fetching module progress:', error);
+    }
+  };
+
+  const completedModulesFromProgress = useMemo(() => {
+    return moduleProgress.filter(progress => progress?.overallComplete || progress?.completionPercentage === 100).length;
+  }, [moduleProgress]);
+
   const handleLogout = () => {
     localStorage.clear();
     navigate('/auth');
@@ -48,8 +88,10 @@ const StudentDashboard = () => {
   if (loading) {
     return (
       <div className="dashboard-loading">
-        <div className="spinner"></div>
-        <p>Loading dashboard...</p>
+        <div className="loading-spinner">
+          <div className="spinner"></div>
+          <p>Loading dashboard...</p>
+        </div>
       </div>
     );
   }
@@ -59,6 +101,10 @@ const StudentDashboard = () => {
   }
 
   const { student, stats, badges, recentProgress } = dashboardData;
+  const totalModulesAssigned = personalizedModules.length || moduleProgress.length;
+  const highPriorityModules = personalizedModules.filter(module => module?.urgent).length;
+
+  const modulesCompleted = completedModulesFromProgress || stats?.modulesCompleted || 0;
 
   return (
     <div className="student-dashboard">
@@ -84,40 +130,6 @@ const StudentDashboard = () => {
         </div>
       </header>
 
-      <div className="dashboard-stats">
-        <div className="stat-card">
-          <div className="stat-icon student-icon">🏆</div>
-          <div className="stat-content">
-            <h3>{stats.totalScore}</h3>
-            <p>Total Score</p>
-          </div>
-        </div>
-
-        <div className="stat-card">
-          <div className="stat-icon student-icon">🎖️</div>
-          <div className="stat-content">
-            <h3>{stats.totalBadges}</h3>
-            <p>Badges Earned</p>
-          </div>
-        </div>
-
-        <div className="stat-card">
-          <div className="stat-icon student-icon">📚</div>
-          <div className="stat-content">
-            <h3>{stats.modulesCompleted}</h3>
-            <p>Modules Completed</p>
-          </div>
-        </div>
-
-        <div className="stat-card">
-          <div className="stat-icon student-icon">🎮</div>
-          <div className="stat-content">
-            <h3>{stats.gamesCompleted}</h3>
-            <p>Games Played</p>
-          </div>
-        </div>
-      </div>
-
       <div className="dashboard-content">
         {/* Badges Section */}
         {badges && badges.length > 0 && (
@@ -140,47 +152,51 @@ const StudentDashboard = () => {
           </div>
         )}
 
-        {/* Learning Modules */}
-        <div className="modules-section">
-          <h2>🌍 Disaster Response Modules</h2>
-          <p className="location-info">
-            📍 Personalized for {student.organization.location.city}, {student.organization.location.state}
-          </p>
+        {/* Learning Modules - Quick Access */}
+        <div className="quick-access-section">
+          <div className="section-header">
+            <h2>🌍 Disaster Safety Learning</h2>
+            <p className="section-description">
+              Start your personalized disaster preparedness journey
+            </p>
+          </div>
           
-          <div className="modules-grid">
-            <div className="module-card earthquake">
-              <div className="module-icon">🌊</div>
-              <h3>Earthquake Safety</h3>
-              <p>Learn how to stay safe during earthquakes</p>
-              <button className="start-btn" onClick={() => navigate('/disaster/earthquake')}>
-                Start Learning
-              </button>
+          <div className="quick-access-card">
+            {locationInfo && (
+              <div className="location-summary">
+                <div className="location-info">
+                  <span className="location-text">📍 {locationInfo.city}, {locationInfo.state}</span>
+                  <span className={`risk-level-compact ${locationInfo.riskLevel.toLowerCase().replace('_', '-')}`}>
+                    {locationInfo.riskLevel.replace('_', ' ')} Risk
+                  </span>
+                </div>
+                <p className="location-note">
+                  Your modules are prioritized based on local disaster risks
+                </p>
+              </div>
+            )}
+            
+            <div className="quick-stats">
+              <div className="stat-item">
+                <span className="stat-number">{modulesCompleted}</span>
+                <span className="stat-label">Modules Completed</span>
+              </div>
+              <div className="stat-item">
+                <span className="stat-number">{totalModulesAssigned}</span>
+                <span className="stat-label">Assigned Modules</span>
+              </div>
+              <div className="stat-item">
+                <span className="stat-number">{highPriorityModules}</span>
+                <span className="stat-label">High Priority</span>
+              </div>
             </div>
-
-            <div className="module-card flood">
-              <div className="module-icon">💧</div>
-              <h3>Flood Preparedness</h3>
-              <p>Essential flood safety knowledge</p>
-              <button className="start-btn" onClick={() => navigate('/disaster/flood')}>
-                Start Learning
-              </button>
-            </div>
-
-            <div className="module-card fire">
-              <div className="module-icon">🔥</div>
-              <h3>Fire Safety</h3>
-              <p>Fire escape and prevention procedures</p>
-              <button className="start-btn" onClick={() => navigate('/disaster/fire')}>
-                Start Learning
-              </button>
-            </div>
-
-            <div className="module-card cyclone">
-              <div className="module-icon">🌀</div>
-              <h3>Cyclone Awareness</h3>
-              <p>How to prepare for cyclones</p>
-              <button className="start-btn" onClick={() => navigate('/disaster/cyclone')}>
-                Start Learning
+            
+            <div className="action-buttons">
+              <button 
+                className="btn-primary-large"
+                onClick={() => navigate('/disaster-modules')}
+              >
+                🚀 Start Learning Modules
               </button>
             </div>
           </div>

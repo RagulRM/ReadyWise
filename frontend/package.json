@@ -4,23 +4,29 @@
   "description": "Interactive Simulation Platform for Location-Based Disaster Response Training",
   "private": true,
   "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-router-dom": "^6.15.0",
-    "axios": "^1.5.0",
-    "framer-motion": "^10.16.1",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
-    "@mui/material": "^5.14.5",
     "@mui/icons-material": "^5.14.3",
+    "@mui/material": "^5.14.5",
+    "@react-three/drei": "^9.88.0",
+    "@react-three/fiber": "^8.15.0",
+    "@react-three/postprocessing": "^3.0.4",
+    "axios": "^1.5.0",
+    "framer-motion": "^10.16.1",
+    "howler": "^2.2.3",
+    "phaser": "^3.90.0",
+    "phaser3-rex-plugins": "^1.80.17",
+    "react": "^18.2.0",
     "react-confetti": "^6.1.0",
-    "howler": "^2.2.3"
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.15.0",
+    "three": "^0.160.0"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.0.4",
-    "vite": "^4.4.9",
     "eslint": "^8.48.0",
-    "eslint-plugin-react": "^7.33.2"
+    "eslint-plugin-react": "^7.33.2",
+    "vite": "^4.4.9"
   },
   "scripts": {
     "dev": "vite",

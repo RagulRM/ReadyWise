@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 // Authentication Pages
@@ -12,18 +12,14 @@ import OrganizationDashboard from './pages/OrganizationDashboard';
 import TeacherDashboard from './pages/TeacherDashboard';
 import StudentDashboard from './pages/StudentDashboard';
 
-// Old Pages (Legacy - to be integrated)
-import HomePage from './pages/HomePage';
-import Dashboard from './pages/Dashboard';
-import GamePage from './pages/GamePage';
+// Learning Pages
 import QuizPage from './pages/QuizPage';
 import DisasterInfoPage from './pages/DisasterInfoPage';
-import ProgressPage from './pages/ProgressPage';
+import DisasterModules from './pages/DisasterModules';
+import LearningPath from './pages/LearningPath';
+import GamePage from './pages/GamePage';
 
 function App() {
-  const [user, setUser] = useState(null);
-  const [locationData, setLocationData] = useState(null);
-
   return (
     <Router>
       <div className="App">
@@ -42,16 +38,14 @@ function App() {
           <Route path="/dashboard/teacher" element={<TeacherDashboard />} />
           <Route path="/dashboard/student" element={<StudentDashboard />} />
           
-          {/* Legacy Routes */}
-          <Route path="/home" element={<HomePage setUser={setUser} />} />
-          <Route 
-            path="/dashboard" 
-            element={<Dashboard user={user} locationData={locationData} />} 
-          />
-          <Route path="/game/:gameId" element={<GamePage user={user} />} />
-          <Route path="/quiz/:disasterType" element={<QuizPage user={user} />} />
+          {/* Disaster Learning Routes */}
+          <Route path="/disaster-modules" element={<DisasterModules />} />
+          <Route path="/learning-path/module/:moduleId" element={<LearningPath />} />
+          <Route path="/learning-path/disaster/:disasterId" element={<LearningPath />} />
+          <Route path="/module/:moduleId/quiz" element={<QuizPage />} />
+          <Route path="/quiz/:disasterType" element={<QuizPage />} />
           <Route path="/disaster/:disasterId" element={<DisasterInfoPage />} />
-          <Route path="/progress" element={<ProgressPage user={user} />} />
+          <Route path="/game/:moduleId" element={<GamePage />} />
         </Routes>
       </div>
     </Router>

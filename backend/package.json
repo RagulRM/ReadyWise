@@ -7,7 +7,9 @@
     "start": "node src/app.js",
     "dev": "nodemon src/app.js",
     "seed": "node src/config/seed-database.js",
-    "test": "jest --coverage"
+    "seed:modules": "node src/config/seed-disaster-modules.js",
+    "seed:all": "node src/config/seed-all.js",
+    "test": "jest --coverage"         
   },
   "keywords": [
     "disaster",

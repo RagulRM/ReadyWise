@@ -165,10 +165,7 @@ const badges = [
 // Seed function
 const seedDatabase = async () => {
   try {
-    console.log('🌱 Starting database seeding...');
-    
-    // Connect to database
-    await connectDatabase();
+    console.log('🌱 Starting badge seeding...');
     
     // Clear existing badges
     await Badge.deleteMany({});
@@ -184,6 +181,24 @@ const seedDatabase = async () => {
       console.log(`   ${badge.icon} ${badge.name} (${badge.rarity})`);
     });
     
+    return insertedBadges;
+    
+  } catch (error) {
+    console.error('❌ Badge seeding failed:', error.message);
+    throw error;
+  }
+};
+
+// Standalone seeding function with DB connection
+const seedDatabaseStandalone = async () => {
+  try {
+    console.log('🌱 Starting database seeding...');
+    
+    // Connect to database
+    await connectDatabase();
+    
+    await seedDatabase();
+    
     console.log('\n🎉 Database seeding completed successfully!');
     process.exit(0);
     
@@ -195,7 +210,7 @@ const seedDatabase = async () => {
 
 // Run seeding if called directly
 if (require.main === module) {
-  seedDatabase();
+  seedDatabaseStandalone();
 }
 
 module.exports = { seedDatabase, badges };

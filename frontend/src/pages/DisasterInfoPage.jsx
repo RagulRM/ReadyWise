@@ -16,11 +16,12 @@ function DisasterInfoPage() {
   const loadDisasterInfo = async () => {
     try {
       const response = await getDisasterDetails(disasterId);
-      setDisaster(response.disaster);
+      // Handle both response formats
+      setDisaster(response.disaster || response.data || response);
     } catch (error) {
       console.error('Failed to load disaster info:', error);
       alert('Failed to load disaster information.');
-      navigate('/dashboard');
+      navigate('/disaster-modules');
     }
   };
 
@@ -35,13 +36,19 @@ function DisasterInfoPage() {
   return (
     <div className="disaster-info-page">
       <div className="info-header">
-        <button className="back-button" onClick={() => navigate('/dashboard')}>
+        <button className="back-button" onClick={() => navigate('/disaster-modules')}>
           ← Back
         </button>
         <div className="header-content">
           <span className="disaster-icon-large">{disaster.icon}</span>
           <h1>{disaster.name}</h1>
           <p>{disaster.ageAppropriateDescription}</p>
+          <button 
+            className="btn-start-learning"
+            onClick={() => navigate(`/learning-path/disaster/${disasterId}`)}
+          >
+            🚀 Start Learning
+          </button>
         </div>
       </div>
 
@@ -64,12 +71,6 @@ function DisasterInfoPage() {
             onClick={() => setActiveTab('donts')}
           >
             🚫 Don'ts
-          </button>
-          <button 
-            className={`tab ${activeTab === 'games' ? 'active' : ''}`}
-            onClick={() => setActiveTab('games')}
-          >
-            🎮 Learn & Play
           </button>
         </div>
 
@@ -118,41 +119,6 @@ function DisasterInfoPage() {
                   <span className="list-text">{item}</span>
                 </div>
               ))}
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'games' && (
-          <div className="card content-card fade-in">
-            <h2>🎮 Interactive Learning</h2>
-            <p className="intro">Practice what you learned with fun games and quizzes!</p>
-            
-            <div className="activity-grid">
-              {disaster.games && disaster.games.map((gameId) => (
-                <div key={gameId} className="activity-card">
-                  <span className="activity-icon">🎮</span>
-                  <h3>Game</h3>
-                  <p>{gameId.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}</p>
-                  <button 
-                    className="btn btn-success"
-                    onClick={() => navigate(`/game/${gameId}`)}
-                  >
-                    Play Now!
-                  </button>
-                </div>
-              ))}
-              
-              <div className="activity-card">
-                <span className="activity-icon">📝</span>
-                <h3>Quiz</h3>
-                <p>Test your knowledge about {disaster.name}</p>
-                <button 
-                  className="btn btn-warning"
-                  onClick={() => navigate(`/quiz/${disasterId}`)}
-                >
-                  Take Quiz
-                </button>
-              </div>
             </div>
           </div>
         )}

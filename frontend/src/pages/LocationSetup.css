@@ -109,3 +109,49 @@
     font-size: 1.8rem;
   }
 }
+
+/* Modern theme overrides */
+
+.location-setup {
+  background: radial-gradient(circle at top, #1e293b 0%, #0f172a 60%, #0a0f1e 100%);
+  color: var(--text-strong);
+}
+
+.setup-card,
+.info-box {
+  background: rgba(2, 6, 23, 0.75);
+  border: 1px solid var(--border-subtle);
+  border-radius: 24px;
+  box-shadow: var(--shadow-soft);
+}
+
+.setup-card h1,
+.user-info h3 {
+  color: var(--accent);
+}
+
+.intro-text,
+.info-box p,
+.location-form label,
+.user-info p {
+  color: var(--text-soft);
+}
+
+.location-form input,
+.location-form select {
+  background: rgba(1, 3, 10, 0.7);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-strong);
+}
+
+.location-form input:focus,
+.location-form select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.1);
+}
+
+.user-info {
+  background: linear-gradient(120deg, var(--primary), var(--accent));
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}

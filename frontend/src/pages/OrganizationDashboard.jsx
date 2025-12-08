@@ -18,6 +18,7 @@ const OrganizationDashboard = () => {
   const [selectedTeacher, setSelectedTeacher] = useState(null);
   const [teacherStudents, setTeacherStudents] = useState([]);
   const [loadingStudents, setLoadingStudents] = useState(false);
+  const [teacherDetail, setTeacherDetail] = useState(null);
 
   useEffect(() => {
     fetchDashboardData();
@@ -74,11 +75,35 @@ const OrganizationDashboard = () => {
     setTeacherStudents([]);
   };
 
+  const openTeacherDetails = (event, teacher) => {
+    event.stopPropagation();
+    setTeacherDetail(teacher);
+  };
+
+  const closeTeacherDetails = () => {
+    setTeacherDetail(null);
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) {
+      return 'Not provided';
+    }
+
+    const parsed = new Date(dateString);
+    if (Number.isNaN(parsed.getTime())) {
+      return 'Not provided';
+    }
+
+    return parsed.toLocaleDateString();
+  };
+
   if (loading) {
     return (
       <div className="dashboard-loading">
-        <div className="spinner"></div>
-        <p>Loading dashboard...</p>
+        <div className="loading-spinner">
+          <div className="spinner"></div>
+          <p>Loading dashboard...</p>
+        </div>
       </div>
     );
   }
@@ -106,6 +131,7 @@ const OrganizationDashboard = () => {
           </div>
         </div>
       </header>
+      
 
       <div className="dashboard-stats">
         <div className="stat-card">
@@ -131,14 +157,6 @@ const OrganizationDashboard = () => {
             <p>Total Classes</p>
           </div>
         </div>
-
-        <div className="stat-card">
-          <div className="stat-icon">✅</div>
-          <div className="stat-content">
-            <h3>{stats.activeTeachers}</h3>
-            <p>Active Teachers</p>
-          </div>
-        </div>
       </div>
 
       <div className="dashboard-content">
@@ -149,11 +167,9 @@ const OrganizationDashboard = () => {
               <thead>
                 <tr>
                   <th>Teacher Name</th>
-                  <th>Subject</th>
-                  <th>Class Teacher</th>
+                  <th>Class</th>
                   <th>Email</th>
-                  <th>Status</th>
-                  <th>Last Login</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -172,7 +188,6 @@ const OrganizationDashboard = () => {
                         {teacher.name}
                       </div>
                     </td>
-                    <td>{teacher.subject}</td>
                     <td>
                       <span className="class-badge">
                         Class {teacher.classTeacher.grade}{teacher.classTeacher.section}
@@ -180,14 +195,13 @@ const OrganizationDashboard = () => {
                     </td>
                     <td>{teacher.email}</td>
                     <td>
-                      <span className={`status-badge ${teacher.isActive ? 'active' : 'inactive'}`}>
-                        {teacher.isActive ? 'Active' : 'Inactive'}
-                      </span>
-                    </td>
-                    <td>
-                      {teacher.lastLogin 
-                        ? new Date(teacher.lastLogin).toLocaleDateString()
-                        : 'Never'}
+                      <button
+                        type="button"
+                        className="view-btn"
+                        onClick={(event) => openTeacherDetails(event, teacher)}
+                      >
+                        View Details
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -234,8 +248,10 @@ const OrganizationDashboard = () => {
 
               {loadingStudents ? (
                 <div className="loading-students">
-                  <div className="spinner"></div>
-                  <p>Loading students...</p>
+                  <div className="loading-spinner">
+                    <div className="spinner"></div>
+                    <p>Loading students...</p>
+                  </div>
                 </div>
               ) : teacherStudents.length === 0 ? (
                 <div className="no-students">
@@ -285,6 +301,87 @@ const OrganizationDashboard = () => {
                   </div>
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {teacherDetail && (
+        <div className="modal-overlay" onClick={closeTeacherDetails}>
+          <div className="modal-content" onClick={(event) => event.stopPropagation()}>
+            <div className="modal-header">
+              <h2>👩‍🏫 {teacherDetail.name} - Profile</h2>
+              <button className="close-btn" onClick={closeTeacherDetails}>×</button>
+            </div>
+            <div className="modal-body">
+              <div className="student-detail-section">
+                <div className="student-details-header">
+                  <div className="avatar large">
+                    {teacherDetail.name.charAt(0).toUpperCase()}
+                  </div>
+                  <div>
+                    <h3>{teacherDetail.name}</h3>
+                    <p className="detail-subtitle">Subject: {teacherDetail.subject || 'Not provided'}</p>
+                    <p className="detail-subtitle">
+                      Class Teacher: Class {teacherDetail.classTeacher?.grade ?? 'N/A'}
+                      {teacherDetail.classTeacher?.section ?? ''}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="student-detail-section">
+                  <h3>Contact Information</h3>
+                  <div className="student-detail-grid">
+                    <div className="student-detail-item">
+                      <span className="detail-label">Email</span>
+                      <span className="detail-value">{teacherDetail.email}</span>
+                    </div>
+                    <div className="student-detail-item">
+                      <span className="detail-label">Phone</span>
+                      <span className="detail-value">{teacherDetail.phone || 'Not provided'}</span>
+                    </div>
+                    <div className="student-detail-item">
+                      <span className="detail-label">Date of Joining</span>
+                      <span className="detail-value">{formatDate(teacherDetail.dateOfJoining)}</span>
+                    </div>
+                    <div className="student-detail-item">
+                      <span className="detail-label">Last Login</span>
+                      <span className="detail-value">{formatDate(teacherDetail.lastLogin)}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="student-detail-section">
+                  <h3>Professional Details</h3>
+                  <div className="student-detail-grid">
+                    <div className="student-detail-item">
+                      <span className="detail-label">Qualification</span>
+                      <span className="detail-value">{teacherDetail.qualification || 'Not provided'}</span>
+                    </div>
+                    <div className="student-detail-item">
+                      <span className="detail-label">Experience (Years)</span>
+                      <span className="detail-value">{typeof teacherDetail.experience === 'number' ? teacherDetail.experience : 'Not provided'}</span>
+                    </div>
+                    <div className="student-detail-item">
+                      <span className="detail-label">Account Status</span>
+                      <span className="detail-value">{teacherDetail.isActive ? 'Active' : 'Inactive'}</span>
+                    </div>
+                    <div className="student-detail-item">
+                      <span className="detail-label">Email Verified</span>
+                      <span className="detail-value">{teacherDetail.emailVerified ? 'Yes' : 'No'}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {teacherDetail.bio && (
+                  <div className="student-detail-section">
+                    <h3>About</h3>
+                    <div className="student-detail-item">
+                      <span className="detail-value">{teacherDetail.bio}</span>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>

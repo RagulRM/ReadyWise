@@ -1,6 +1,5 @@
 import axios from 'axios';
-
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+import API_BASE_URL from '../config/api.config';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -36,22 +35,6 @@ export const getSafetySteps = async (disasterId) => {
   return response.data;
 };
 
-// User API
-export const registerUser = async (userData) => {
-  const response = await api.post('/users/register', userData);
-  return response.data;
-};
-
-export const getUserProfile = async (userId) => {
-  const response = await api.get(`/users/${userId}`);
-  return response.data;
-};
-
-export const getUserProgress = async (userId) => {
-  const response = await api.get(`/users/${userId}/progress`);
-  return response.data;
-};
-
 // Quiz API
 export const getQuiz = async (disasterType) => {
   const response = await api.get(`/quiz/${disasterType}`);
@@ -60,38 +43,6 @@ export const getQuiz = async (disasterType) => {
 
 export const submitQuiz = async (quizData) => {
   const response = await api.post('/quiz/submit', quizData);
-  return response.data;
-};
-
-// Game API
-export const getAllGames = async () => {
-  const response = await api.get('/games');
-  return response.data;
-};
-
-export const getGame = async (gameId) => {
-  const response = await api.get(`/games/${gameId}`);
-  return response.data;
-};
-
-export const submitGameResults = async (gameId, results) => {
-  const response = await api.post(`/games/${gameId}/submit`, results);
-  return response.data;
-};
-
-// Progress API
-export const saveProgress = async (progressData) => {
-  const response = await api.post('/progress', progressData);
-  return response.data;
-};
-
-export const getProgress = async (userId) => {
-  const response = await api.get(`/progress/${userId}`);
-  return response.data;
-};
-
-export const awardBadge = async (badgeData) => {
-  const response = await api.post('/progress/badge', badgeData);
   return response.data;
 };
 

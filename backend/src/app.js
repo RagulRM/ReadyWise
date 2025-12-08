@@ -51,11 +51,9 @@ const dashboardRoutes = require('./routes/dashboard.routes');
 const organizationRoutes = require('./routes/organization.routes');
 const locationRoutes = require('./routes/location.routes');
 const disasterRoutes = require('./routes/disaster.routes');
-const userRoutes = require('./routes/user.routes');
-const progressRoutes = require('./routes/progress.routes');
 const quizRoutes = require('./routes/quiz.routes');
-const gameRoutes = require('./routes/game.routes');
 const badgeRoutes = require('./routes/badge.routes');
+const moduleProgressRoutes = require('./routes/module-progress.routes');
 
 // Authentication & Dashboard Routes (New)
 app.use(`${appConfig.server.apiPrefix}/auth`, authRoutes);
@@ -65,10 +63,8 @@ app.use(`${appConfig.server.apiPrefix}/organizations`, organizationRoutes);
 // Existing Routes
 app.use(`${appConfig.server.apiPrefix}/location`, locationRoutes);
 app.use(`${appConfig.server.apiPrefix}/disasters`, disasterRoutes);
-app.use(`${appConfig.server.apiPrefix}/users`, userRoutes);
-app.use(`${appConfig.server.apiPrefix}/progress`, progressRoutes);
+app.use(`${appConfig.server.apiPrefix}/module-progress`, moduleProgressRoutes);
 app.use(`${appConfig.server.apiPrefix}/quiz`, quizRoutes);
-app.use(`${appConfig.server.apiPrefix}/games`, gameRoutes);
 app.use(`${appConfig.server.apiPrefix}/badges`, badgeRoutes);
 
 // Welcome Route
@@ -83,10 +79,8 @@ app.get('/', (req, res) => {
       dashboard: `${appConfig.server.apiPrefix}/dashboard`,
       location: `${appConfig.server.apiPrefix}/location`,
       disasters: `${appConfig.server.apiPrefix}/disasters`,
-      users: `${appConfig.server.apiPrefix}/users`,
-      progress: `${appConfig.server.apiPrefix}/progress`,
+      moduleProgress: `${appConfig.server.apiPrefix}/module-progress`,
       quiz: `${appConfig.server.apiPrefix}/quiz`,
-      games: `${appConfig.server.apiPrefix}/games`,
       badges: `${appConfig.server.apiPrefix}/badges`,
     },
     userTypes: ['organization', 'teacher', 'student']

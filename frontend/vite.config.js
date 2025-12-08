@@ -7,11 +7,16 @@ export default defineConfig({
     port: 3000,
     proxy: {
       '/api': {
-        target: 'http://localhost:5000',
+        target: 'http://localhost:5001',
         changeOrigin: true
       }
+    },
+    fs: {
+      // Allow serving files from parent directory
+      allow: ['..']
     }
   },
+  publicDir: 'public',
   build: {
     outDir: 'dist',
     sourcemap: true

@@ -49,6 +49,29 @@
 .header-content p {
   font-size: 1.3rem;
   opacity: 0.9;
+  margin-bottom: 24px;
+}
+
+.btn-start-learning {
+  background: linear-gradient(120deg, #22d3ee, #6366f1);
+  color: white;
+  border: none;
+  padding: 18px 48px;
+  border-radius: 999px;
+  font-size: 1.4rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 12px 35px rgba(34, 211, 238, 0.4);
+  transition: all 0.3s ease;
+  margin-top: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.btn-start-learning:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 45px rgba(34, 211, 238, 0.5);
+  background: linear-gradient(120deg, #06b6d4, #4f46e5);
 }
 
 .tabs {
@@ -295,4 +318,63 @@
   .activity-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* Modern theme overrides */
+
+.disaster-info-page {
+  background: radial-gradient(circle at top, #1e293b 0%, #0f172a 60%, #0a0f1e 100%);
+  color: var(--text-strong);
+}
+
+.info-header {
+  background: linear-gradient(120deg, var(--primary), var(--accent));
+  box-shadow: var(--shadow-soft);
+}
+
+.tabs .tab {
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-soft);
+  backdrop-filter: blur(12px);
+}
+
+.tabs .tab.active {
+  background: linear-gradient(120deg, var(--primary), var(--accent));
+  color: var(--text-strong);
+}
+
+.content-card .steps-list .step-item,
+.list-item,
+.activity-card,
+.emergency-item {
+  background: rgba(30, 41, 59, 0.75);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-soft);
+  box-shadow: var(--shadow-soft);
+}
+
+.list-item.dos,
+.list-item.donts,
+.emergency-card {
+  background: rgba(30, 41, 59, 0.85);
+  border-left-color: var(--accent);
+}
+
+.step-number,
+.activity-card h3,
+.content-card h2,
+.number {
+  color: var(--accent);
+}
+
+.back-button {
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 999px;
+}
+
+.intro,
+.list-text,
+.activity-card p {
+  color: var(--text-soft);
 }

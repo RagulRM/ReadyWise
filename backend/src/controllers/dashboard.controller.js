@@ -7,6 +7,7 @@ const Organization = require('../models/Organization.model');
 const Teacher = require('../models/Teacher.model');
 const Student = require('../models/Student.model');
 const Progress = require('../models/Progress.model');
+require('../models/Badge.model');
 
 // =============================================
 // ORGANIZATION DASHBOARD
@@ -32,7 +33,7 @@ exports.getOrganizationDashboard = async (req, res) => {
 
     // Get all teachers with their assigned classes
     const teachers = await Teacher.find({ organization: organizationId })
-      .select('name email subject classTeacher isActive lastLogin')
+      .select('name email subject classTeacher isActive lastLogin phone qualification experience dateOfJoining bio emailVerified profilePicture')
       .sort({ 'classTeacher.grade': 1, 'classTeacher.section': 1 });
 
     // Get student count by class
@@ -196,7 +197,8 @@ exports.getStudentProgress = async (req, res) => {
       .populate('progress.modulesCompleted')
       .populate('progress.quizzesCompleted')
       .populate('progress.gamesCompleted')
-      .populate('progress.badges');
+      .populate('progress.badges')
+      .lean({ virtuals: true });
 
     if (!student) {
       return res.status(404).json({
@@ -208,22 +210,50 @@ exports.getStudentProgress = async (req, res) => {
     // Get detailed progress data - Note: Progress model uses 'userId' not 'user'
     const progressDetails = await Progress.find({
       userId: studentId
-    }).sort({ createdAt: -1 });
+    })
+      .sort({ createdAt: -1 })
+      .lean();
+
+    const {
+      name,
+      email,
+      rollNumber,
+      class: classInfo,
+      dateOfBirth,
+      gender,
+      phone,
+      parentPhone,
+      parentEmail,
+      profilePicture,
+      enrollmentDate,
+      lastLogin,
+      progress = {}
+    } = student;
 
     res.status(200).json({
       success: true,
       data: {
         student: {
-          name: student.name,
-          rollNumber: student.rollNumber,
-          class: student.class
+          name,
+          email,
+          rollNumber,
+          class: classInfo,
+          dateOfBirth,
+          gender,
+          phone,
+          parentPhone,
+          parentEmail,
+          profilePicture,
+          enrollmentDate,
+          lastLogin
         },
-        progress: student.progress,
+        progress,
         progressDetails
       }
     });
 
   } catch (error) {
+    console.error('Error in getStudentProgress:', error);
     res.status(500).json({
       success: false,
       message: 'Error fetching student progress',
